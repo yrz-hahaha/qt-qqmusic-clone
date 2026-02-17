@@ -1,11 +1,12 @@
-#include "widget.h"
-#include "ui_widget.h"
+#include "qmusic.h"
+// #include "ui_widget.h"
+#include "ui_qmusic.h"
 
 #include <QTimer>
 
-Widget::Widget(QWidget *parent)
+QMusic::QMusic(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::Widget)
+    , ui(new Ui::QMusic)
 {
     ui->setupUi(this);
 
@@ -13,12 +14,12 @@ Widget::Widget(QWidget *parent)
 
 }
 
-Widget::~Widget()
+QMusic::~QMusic()
 {
     delete ui;
 }
 
-void Widget::initUI()
+void QMusic::initUI()
 {
     // 设置窗口为无边框
     setWindowFlag(Qt::WindowType::FramelessWindowHint);
@@ -43,7 +44,7 @@ void Widget::initUI()
     });
 }
 
-void Widget::mousePressEvent(QMouseEvent *event)
+void QMusic::mousePressEvent(QMouseEvent *event)
 {
     QWidget *clickedWidget = childAt(event->pos());
 
@@ -78,7 +79,7 @@ void Widget::mousePressEvent(QMouseEvent *event)
     QWidget::mousePressEvent(event);
 }
 
-void Widget::mouseMoveEvent(QMouseEvent *event)
+void QMusic::mouseMoveEvent(QMouseEvent *event)
 {
     // event->buttons(): 返回鼠标按键状态
     // "&" 只要按下了左键，不管有没有同时按住其他键，条件都成立。
@@ -95,13 +96,13 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
     QWidget::mouseMoveEvent(event);
 }
 
-void Widget::mouseReleaseEvent(QMouseEvent *event)
+void QMusic::mouseReleaseEvent(QMouseEvent *event)
 {
     isDragging = false;
     (void)event;
 }
 
-void Widget::addShadow()
+void QMusic::addShadow()
 {
     // 1. 设置窗口背景透明（非常关键，否则阴影会被窗口的背景色遮挡）
     this->setAttribute(Qt::WA_TranslucentBackground);
@@ -122,7 +123,7 @@ void Widget::addShadow()
     this->setGraphicsEffect(shadowEffect);
 }
 
-void Widget::setBtFormInfo()
+void QMusic::setBtFormInfo()
 {
     ui->rec->seticon(":/images/rec.png", "推荐", 1);
     ui->music->seticon(":/images/music.png", "⾳乐馆", 2);
@@ -132,7 +133,7 @@ void Widget::setBtFormInfo()
     ui->recent->seticon(":/images/recent.png", "最近播放", 6);
 }
 
-void Widget::onBtFormClick(int id)
+void QMusic::onBtFormClick(int id)
 {
     // 1.获取当前⻚⾯所有btFrom按钮类型的对象
     // 因为 findChildren 是一个递归搜索操作，会递归地查找当前对象（this，即你的 Widget）对象树上的所有控件，
@@ -157,15 +158,15 @@ void Widget::onBtFormClick(int id)
     ui->stackedWidget->setCurrentIndex(id - 1);
 }
 
-void Widget::connectSignalAndSlot()
+void QMusic::connectSignalAndSlot()
 {
     // ⾃定义的btFrom按钮点击信号，当btForm点击后，设置对应的堆叠窗⼝
-    connect(ui->rec, &BtForm::click, this, &Widget::onBtFormClick);
-    connect(ui->music, &BtForm::click, this, &Widget::onBtFormClick);
-    connect(ui->audio, &BtForm::click, this, &Widget::onBtFormClick);
-    connect(ui->like, &BtForm::click, this, &Widget::onBtFormClick);
-    connect(ui->local, &BtForm::click, this, &Widget::onBtFormClick);
-    connect(ui->recent, &BtForm::click, this, &Widget::onBtFormClick);
+    connect(ui->rec, &BtForm::click, this, &QMusic::onBtFormClick);
+    connect(ui->music, &BtForm::click, this, &QMusic::onBtFormClick);
+    connect(ui->audio, &BtForm::click, this, &QMusic::onBtFormClick);
+    connect(ui->like, &BtForm::click, this, &QMusic::onBtFormClick);
+    connect(ui->local, &BtForm::click, this, &QMusic::onBtFormClick);
+    connect(ui->recent, &BtForm::click, this, &QMusic::onBtFormClick);
 }
 
 

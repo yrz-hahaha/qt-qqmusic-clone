@@ -6,16 +6,16 @@
 #include <QGraphicsDropShadowEffect>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class Widget; }
+namespace Ui { class QMusic; }
 QT_END_NAMESPACE
 
-class Widget : public QWidget
+class QMusic : public QWidget
 {
     Q_OBJECT
 
 public:
-    Widget(QWidget *parent = nullptr);
-    ~Widget();
+    QMusic(QWidget *parent = nullptr);
+    ~QMusic();
 
     void initUI();
 
@@ -40,7 +40,7 @@ protected:
 
 
 private:
-    Ui::Widget *ui;
+    Ui::QMusic *ui;
 
     bool isDragging;		// 记录鼠标是否处于按下并准备拖拽的状态
     QPoint dragPosition;	// 记录鼠标按下时，鼠标指针相对于窗口左上角的坐标偏移

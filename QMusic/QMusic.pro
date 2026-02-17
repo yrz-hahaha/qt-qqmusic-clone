@@ -18,15 +18,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     btform.cpp \
     main.cpp \
-    widget.cpp
+    qmusic.cpp
 
 HEADERS += \
     btform.h \
-    widget.h
+    qmusic.h
 
 FORMS += \
     btform.ui \
-    widget.ui
+    qmusic.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
