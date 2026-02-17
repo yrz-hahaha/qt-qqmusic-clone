@@ -1,0 +1,43 @@
+<RCC>
+    <qresource prefix="/">
+        <file>add.png</file>
+        <file>bg.png</file>
+        <file>ci.png</file>
+        <file>cyx.png</file>
+        <file>default_cover.png</file>
+        <file>down.png</file>
+        <file>down_page.png</file>
+        <file>ilikebg.png</file>
+        <file>like.png</file>
+        <file>like_1.png</file>
+        <file>like_2.png</file>
+        <file>like_3.png</file>
+        <file>list_play.png</file>
+        <file>local.png</file>
+        <file>localbg.png</file>
+        <file>Logo.png</file>
+        <file>max.png</file>
+        <file>min.png</file>
+        <file>music.png</file>
+        <file>non-music.png</file>
+        <file>order_play.png</file>
+        <file>play.png</file>
+        <file>play_2.png</file>
+        <file>play_on.png</file>
+        <file>play3.png</file>
+        <file>quit.png</file>
+        <file>radio.png</file>
+        <file>rec.png</file>
+        <file>recent.png</file>
+        <file>recentbg.png</file>
+        <file>shuffle.png</file>
+        <file>shuffle_2.png</file>
+        <file>silent.png</file>
+        <file>single_play.png</file>
+        <file>skin.png</file>
+        <file>up.png</file>
+        <file>up_page.png</file>
+        <file>volumn.png</file>
+        <file>xiala.png</file>
+    </qresource>
+</RCC>

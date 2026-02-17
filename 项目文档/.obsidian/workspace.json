@@ -1,0 +1,236 @@
+{
+  "main": {
+    "id": "96578220d60178cf",
+    "type": "split",
+    "children": [
+      {
+        "id": "adcc022cc13a85ea",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0fdc2fefb86af755",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "3. 界面美化.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "3. 界面美化"
+            }
+          },
+          {
+            "id": "b55fa570c3a6f48f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "4. 自定义控件1 --- BtForm.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "4. 自定义控件1 --- BtForm"
+            }
+          },
+          {
+            "id": "7c3b14838540da20",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "5. 自定义控件2 --- 推荐页面.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "5. 自定义控件2 --- 推荐页面"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "711152104abaf2ae",
+    "type": "split",
+    "children": [
+      {
+        "id": "f319150abf54d47c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a638181b6a8cbd34",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "69e11d5b9b826312",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "52925f1ced8a1f9d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f2faeaafaf345ff4",
+    "type": "split",
+    "children": [
+      {
+        "id": "ca311c1f2a73cd35",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4da6d5321ea4606e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "1. 界面规划.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "1. 界面规划 的反向链接列表"
+            }
+          },
+          {
+            "id": "3ea1cee8310d13eb",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "1. 界面规划.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "1. 界面规划 的出链列表"
+            }
+          },
+          {
+            "id": "1237f6868972bab7",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "9134f355d91ebf73",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "581b053fb87b3506",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "5. 自定义控件2 --- 推荐页面.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "5. 自定义控件2 --- 推荐页面 的大纲"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "7c3b14838540da20",
+  "lastOpenFiles": [
+    "QSS.md",
+    "3. 界面美化.md",
+    "4. 自定义控件1 --- BtForm.md",
+    "5. 自定义控件2 --- 推荐页面.md",
+    "assets/Pasted image 20260215153715.png",
+    "2. 界面布局设计.md",
+    "1. 界面规划.md",
+    "assets/QQ_1771139260700.png",
+    "assets/Pasted image 20260215150651.png",
+    "assets/QQ_1770867084398.png",
+    "assets/QQ_1770866956372.png",
+    "assets/QQ_1770799873594.png",
+    "assets/QQ_1770799841347.png",
+    "assets/QQ_1770799747747.png",
+    "assets/QQ_1770799578510.png",
+    "assets/QQ_1770780804020.png",
+    "QSS简介.md",
+    "assets"
+  ]
+}

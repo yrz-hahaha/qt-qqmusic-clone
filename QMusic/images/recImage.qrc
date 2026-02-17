@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/">
+        <file>rec/001.png</file>
+        <file>rec/001.webp</file>
+        <file>rec/002.png</file>
+        <file>rec/003.png</file>
+        <file>rec/004.png</file>
+        <file>rec/005.png</file>
+        <file>rec/006.png</file>
+        <file>rec/007.png</file>
+        <file>rec/008.png</file>
+        <file>rec/009.png</file>
+        <file>rec/010.png</file>
+        <file>rec/011.png</file>
+        <file>rec/012.png</file>
+        <file>rec/013.png</file>
+        <file>rec/014.png</file>
+        <file>rec/015.png</file>
+        <file>rec/016.png</file>
+        <file>rec/017.png</file>
+        <file>rec/018.png</file>
+        <file>rec/019.png</file>
+        <file>rec/020.png</file>
+        <file>rec/021.png</file>
+        <file>rec/022.png</file>
+        <file>rec/023.png</file>
+        <file>rec/024.png</file>
+        <file>rec/025.png</file>
+        <file>rec/026.png</file>
+        <file>rec/027.png</file>
+        <file>rec/028.png</file>
+        <file>rec/029.png</file>
+        <file>rec/030.png</file>
+        <file>rec/031.png</file>
+        <file>rec/032.png</file>
+        <file>rec/033.png</file>
+        <file>rec/034.png</file>
+        <file>rec/035.png</file>
+        <file>rec/036.png</file>
+        <file>rec/037.png</file>
+        <file>rec/038.png</file>
+        <file>rec/039.png</file>
+        <file>rec/040.png</file>
+    </qresource>
+</RCC>
