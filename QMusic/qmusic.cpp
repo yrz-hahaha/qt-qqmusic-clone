@@ -1,8 +1,9 @@
 #include "qmusic.h"
-// #include "ui_widget.h"
 #include "ui_qmusic.h"
 
 #include <QTimer>
+#include <QJsonObject>
+#include <QJsonArray>
 
 QMusic::QMusic(QWidget *parent)
     : QWidget(parent)
@@ -11,7 +12,6 @@ QMusic::QMusic(QWidget *parent)
     ui->setupUi(this);
 
     initUI();
-
 }
 
 QMusic::~QMusic()
@@ -42,6 +42,11 @@ void QMusic::initUI()
     QTimer::singleShot(0, this, [=](){
         onBtFormClick(1);
     });
+
+    // 向 recBox 中添加元素
+    srand(time(NULL));
+    ui->recMusicBox->initRecBoxUi(randomPicture(), 1);
+    ui->supplyMusicBox->initRecBoxUi(randomPicture(), 2);
 }
 
 void QMusic::mousePressEvent(QMouseEvent *event)
@@ -156,6 +161,7 @@ void QMusic::onBtFormClick(int id)
     }
     // 3.设置当前栈空间显⽰⻚⾯
     ui->stackedWidget->setCurrentIndex(id - 1);
+    // ui->stackedWidget->setCurrentIndex(0);
 }
 
 void QMusic::connectSignalAndSlot()
@@ -169,5 +175,45 @@ void QMusic::connectSignalAndSlot()
     connect(ui->recent, &BtForm::click, this, &QMusic::onBtFormClick);
 }
 
+QJsonArray QMusic::randomPicture()
+{
+    // 1. 初始化推荐图片路径列表
+    QVector<QString> vecImageName;
+    vecImageName << "001.png" << "002.png" << "003.png" << "004.png" << "005.png"
+                 << "006.png" << "007.png" << "008.png" << "009.png" << "010.png"
+                 << "011.png" << "012.png" << "013.png" << "014.png" << "015.png"
+                 << "016.png" << "017.png" << "018.png" << "019.png" << "020.png"
+                 << "021.png" << "022.png" << "023.png" << "024.png" << "025.png"
+                 << "026.png" << "027.png" << "028.png" << "029.png" << "030.png"
+                 << "031.png" << "032.png" << "033.png" << "034.png" << "035.png"
+                 << "036.png" << "037.png" << "038.png" << "039.png" << "040.png";
 
+    // 2. 打乱图片顺序，实现每次打开都是“随机推荐”的效果
+    std::random_shuffle(vecImageName.begin(), vecImageName.end());
+
+    QJsonArray objArray;
+
+    // 3. 循环构造 Json 对象并存入数组
+    for (int i = 0; i < vecImageName.size(); ++i) {
+        QJsonObject obj;
+
+        // 拼接资源文件路径，例如：":/images/rec/001.png"
+        obj.insert("path", ":/images/rec/" + vecImageName[i]);
+
+        /* * 格式化推荐文本内容：
+         * %1：占位符
+         * arg(i, 3, 10, QChar('0')) 解析：
+         * i：当前循环索引
+         * 3：总共占 3 位
+         * 10：使用 10 进制
+         * QChar('0')：不足 3 位的前面补 '0'，例如：推荐-000, 推荐-001...
+         */
+        QString strText = QString("推荐-%1").arg(i, 3, 10, QChar('0'));
+        obj.insert("text", strText);
+
+        objArray.append(obj);
+    }
+
+    return objArray;
+}
 

@@ -37,7 +37,8 @@ protected:
     // 链接信号和槽
     void connectSignalAndSlot();
 
-
+    // 图片路径和推荐文本准备
+    QJsonArray randomPicture();
 
 private:
     Ui::QMusic *ui;
