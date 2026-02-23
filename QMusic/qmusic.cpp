@@ -47,6 +47,11 @@ void QMusic::initUI()
     srand(time(NULL));
     ui->recMusicBox->initRecBoxUi(randomPicture(), 1);
     ui->supplyMusicBox->initRecBoxUi(randomPicture(), 2);
+
+    // 设置我喜欢、本地⾳乐、最近播放⻚⾯
+    ui->likePage->setCommonPageUI("我喜欢", ":/images/ilikebg.png");
+    ui->localPage->setCommonPageUI("本地⾳乐", ":/images/localbg.png");
+    ui->recentPage->setCommonPageUI("最近播放", ":/images/recentbg.png");
 }
 
 void QMusic::mousePressEvent(QMouseEvent *event)

@@ -553,7 +553,7 @@ QPushButton:hover
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
             <property name="currentIndex">
-             <number>0</number>
+             <number>5</number>
             </property>
             <widget class="QWidget" name="recPage">
              <property name="styleSheet">
@@ -702,9 +702,9 @@ QScrollBar::handle:vertical {
             </widget>
             <widget class="QWidget" name="musicPage"/>
             <widget class="QWidget" name="radioPage"/>
-            <widget class="QWidget" name="likePage"/>
-            <widget class="QWidget" name="localPage"/>
-            <widget class="QWidget" name="recentPage"/>
+            <widget class="CommonPage" name="likePage"/>
+            <widget class="CommonPage" name="localPage"/>
+            <widget class="CommonPage" name="recentPage"/>
            </widget>
           </item>
           <item>
@@ -1076,6 +1076,12 @@ QPushButton:hover
    <class>RecBox</class>
    <extends>QWidget</extends>
    <header location="global">recbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CommonPage</class>
+   <extends>QWidget</extends>
+   <header location="global">commonpage.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
