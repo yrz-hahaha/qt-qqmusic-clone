@@ -5,6 +5,8 @@
 #include <QMouseEvent>
 #include <QGraphicsDropShadowEffect>
 
+#include "volumetool.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class QMusic; }
 QT_END_NAMESPACE
@@ -18,6 +20,9 @@ public:
     ~QMusic();
 
     void initUI();
+
+private slots:
+    void on_volume_clicked();
 
 protected:
     // 重写QWidget类的⿏标单击和⿏标移动事件
@@ -45,5 +50,7 @@ private:
 
     bool isDragging;		// 记录鼠标是否处于按下并准备拖拽的状态
     QPoint dragPosition;	// 记录鼠标按下时，鼠标指针相对于窗口左上角的坐标偏移
+
+    VolumeTool* volumeTool;
 };
 #endif // WIDGET_H

@@ -611,8 +611,8 @@ QScrollBar::handle:vertical {
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>819</width>
-                   <height>509</height>
+                   <width>186</width>
+                   <height>172</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -708,7 +708,7 @@ QScrollBar::handle:vertical {
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="processBar" native="true">
+           <widget class="MusicSlider" name="processBar" native="true">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -722,7 +722,7 @@ QScrollBar::handle:vertical {
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color:pink;</string>
+             <string notr="true"/>
             </property>
            </widget>
           </item>
@@ -1082,6 +1082,12 @@ QPushButton:hover
    <class>CommonPage</class>
    <extends>QWidget</extends>
    <header location="global">commonpage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MusicSlider</class>
+   <extends>QWidget</extends>
+   <header location="global">musicslider.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

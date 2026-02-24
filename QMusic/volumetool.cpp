@@ -1,0 +1,78 @@
+#include "volumetool.h"
+#include "ui_volumetool.h"
+
+#include <QGraphicsDropShadowEffect>
+#include <QPainter>
+
+VolumeTool::VolumeTool(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::VolumeTool)
+{
+    ui->setupUi(this);
+
+    // 1. 设置窗口标志（Window Flags）
+    // 通过位掩码（Bitmask）配置窗口的交互行为与外观样式
+    // Qt::Popup：将窗口设置为弹出式。核心特性是“失焦自隐”，即点击窗口外部区域时自动关闭（Hide）。
+    // Qt::FramelessWindowHint：移除标题栏、缩放按钮等原生装饰。这是实现自定义圆角或异形 UI 的前提。
+    // (注意：在 Windows 平台，开启透明属性后必须配合此标志，否则非控件区域将渲染为黑色背景)
+    // Qt::NoDropShadowWindowHint：禁用 OS 层级的原生阴影，规避系统阴影与后续自定义阴影的渲染冲突。
+    setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+
+    // 2. 开启跨平台透明支持
+    // 允许窗口背景渲染为透明，配合 QSS 即可实现圆角效果
+    setAttribute(Qt::WA_TranslucentBackground);
+
+    // 3. 配置自定义图形阴影（QGraphicsDropShadowEffect）
+    // 比起系统阴影，自定义阴影可控性更高，能有效增强界面的视觉层级感
+    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect(this);
+    shadowEffect->setOffset(0, 0);       // 偏移量为0，形成四周均匀发散的呼吸灯感
+    shadowEffect->setColor("#646464");   // 柔和的深灰色
+    shadowEffect->setBlurRadius(10);     // 模糊半径，数值越大阴影越虚化
+    this->setGraphicsEffect(shadowEffect);
+
+    // 4. 加载资源文件
+    ui->silenceBtn->setIcon(QIcon(":/images/volumn.png"));
+
+    // 5. 初始化音量条布局（默认音量 20%）
+    // 核心逻辑：由于 Qt 坐标系 Y 轴向下增长，而音量条需“自底向上”绘制，需进行逆向几何映射。
+    // 计算公式：y_pos = y_start + (总高度 - 当前进度高度)
+    // 169 = 25 + (180 - 36)
+    ui->outSlider->setGeometry(ui->outSlider->x(), 25 + 180 - 36, ui->outSlider->width(), 36);
+
+    // 联动计算滑块位置：将滑块中心点与进度条顶部对齐
+    ui->sliderBtn->move(ui->sliderBtn->x(), ui->outSlider->y() - ui->sliderBtn->height() / 2);
+
+    // 同步 UI 文本显示
+    ui->volumeRatio->setText("20%");
+}
+
+VolumeTool::~VolumeTool()
+{
+    delete ui;
+}
+
+void VolumeTool::paintEvent(QPaintEvent *event)
+{
+    (void)event; // 明确告诉编译器该参数暂不使用，避免警告
+
+    // 1. 创建绘图对象：指定在当前窗口 (this) 上画图
+    QPainter painter(this);
+
+    // 2. 设置抗锯齿：让画出来的图形边缘更平滑，不带“毛边”
+    painter.setRenderHint(QPainter::Antialiasing, true);
+
+    // 3. 设置画笔：设置为 NoPen 代表不需要边框线
+    painter.setPen(Qt::NoPen);
+
+    // 4. 设置画刷：填充颜色为白色
+    painter.setBrush(Qt::white);
+
+    // 5. 定义三角形的三个顶点 (QPolygon 多边形)
+    QPolygon polygon;
+    polygon.append(QPoint(30, 300)); // 左顶点
+    polygon.append(QPoint(70, 300)); // 右顶点
+    polygon.append(QPoint(50, 320)); // 下顶点（尖角向下）
+
+    // 6. 绘制三角形
+    painter.drawPolygon(polygon);
+}

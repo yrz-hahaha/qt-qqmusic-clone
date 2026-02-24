@@ -20,25 +20,31 @@ SOURCES += \
     commonpage.cpp \
     listitembox.cpp \
     main.cpp \
+    musicslider.cpp \
     qmusic.cpp \
     recbox.cpp \
-    recboxitem.cpp
+    recboxitem.cpp \
+    volumetool.cpp
 
 HEADERS += \
     btform.h \
     commonpage.h \
     listitembox.h \
+    musicslider.h \
     qmusic.h \
     recbox.h \
-    recboxitem.h
+    recboxitem.h \
+    volumetool.h
 
 FORMS += \
     btform.ui \
     commonpage.ui \
     listitembox.ui \
+    musicslider.ui \
     qmusic.ui \
     recbox.ui \
-    recboxitem.ui
+    recboxitem.ui \
+    volumetool.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

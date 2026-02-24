@@ -52,6 +52,9 @@ void QMusic::initUI()
     ui->likePage->setCommonPageUI("我喜欢", ":/images/ilikebg.png");
     ui->localPage->setCommonPageUI("本地⾳乐", ":/images/localbg.png");
     ui->recentPage->setCommonPageUI("最近播放", ":/images/recentbg.png");
+
+    // 创建⾳量调节窗⼝对象并挂到对象树
+    volumeTool = new VolumeTool(this);
 }
 
 void QMusic::mousePressEvent(QMouseEvent *event)
@@ -222,3 +225,25 @@ QJsonArray QMusic::randomPicture()
     return objArray;
 }
 
+void QMusic::on_volume_clicked()
+{
+    // 由于弹出窗口默认在屏幕的 (0, 0) 位置显示，为了让它精准出现在按钮上方，我们必须重新计算它的全局坐标
+
+    // 1. 获取音量按钮在屏幕（全局）中的坐标
+    // 这样弹出的音量条才能精准定位在按钮附近，而不是主窗口左上角
+    QPoint point = ui->volume->mapToGlobal(QPoint(0, 0));
+
+    // 2. 计算 volumeTool 窗口的左上角位置
+    // 逻辑：将弹出窗口的底部中心点对齐到按钮的左上角
+    // 弹出窗口左上角 = 按钮全局坐标 - (窗口宽度的1/2, 窗口总高度)
+    QPoint volumeLeftTop = point - QPoint(volumeTool->width() / 2, volumeTool->height());
+
+    // 3. 微调窗口位置
+    // 根据实际 UI 视觉效果进行手动偏移，确保遮盖或间距美观
+    volumeLeftTop.setY(volumeLeftTop.y() + 30);
+    volumeLeftTop.setX(volumeLeftTop.x() + 15);
+
+    // 4. 执行移动并显示
+    volumeTool->move(volumeLeftTop);
+    volumeTool->show();
+}
