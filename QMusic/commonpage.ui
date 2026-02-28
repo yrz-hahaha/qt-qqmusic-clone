@@ -230,7 +230,30 @@
     </widget>
    </item>
    <item>
-    <widget class="QListWidget" name="pageMusicList"/>
+    <widget class="QListWidget" name="pageMusicList">
+     <property name="styleSheet">
+      <string notr="true">#pageMusicList::item:selected 
+{
+	background-color:#EFEFEF;
+}
+
+QScrollBar:vertical
+{
+	border:none; /*边框去掉*/
+	width:10px; /*宽度15像素*/
+	background-color:#FFFFFF; /*背景颜⾊⽩⾊*/
+	margin:0px,0px,0px,0px; /*边距不要*/
+}
+
+QScrollBar::handle:vertical /*设置垂直滑竿*/
+{
+	width:10px;
+	background-color:#EFEFEF;
+	border-radius:5px;
+	min-height:20px;
+}</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

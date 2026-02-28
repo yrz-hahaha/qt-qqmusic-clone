@@ -4,6 +4,8 @@
 #include <QTimer>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDir>
+#include <QFileDialog>
 
 QMusic::QMusic(QWidget *parent)
     : QWidget(parent)
@@ -49,8 +51,11 @@ void QMusic::initUI()
     ui->supplyMusicBox->initRecBoxUi(randomPicture(), 2);
 
     // 设置我喜欢、本地⾳乐、最近播放⻚⾯
+    ui->likePage->setMusicListType(PageType::LIKE_PAGE);
     ui->likePage->setCommonPageUI("我喜欢", ":/images/ilikebg.png");
+    ui->localPage->setMusicListType(PageType::LOCAL_PAGE);
     ui->localPage->setCommonPageUI("本地⾳乐", ":/images/localbg.png");
+    ui->recentPage->setMusicListType(PageType::HISTORY_PAGE);
     ui->recentPage->setCommonPageUI("最近播放", ":/images/recentbg.png");
 
     // 创建⾳量调节窗⼝对象并挂到对象树
@@ -181,6 +186,11 @@ void QMusic::connectSignalAndSlot()
     connect(ui->like, &BtForm::click, this, &QMusic::onBtFormClick);
     connect(ui->local, &BtForm::click, this, &QMusic::onBtFormClick);
     connect(ui->recent, &BtForm::click, this, &QMusic::onBtFormClick);
+
+    // 关联CommonPage发射的updateLikeMusic信号
+    connect(ui->likePage, &CommonPage::updateLikeMusic, this, &QMusic::onUpdateLikeMusic);
+    connect(ui->localPage, &CommonPage::updateLikeMusic, this, &QMusic::onUpdateLikeMusic);
+    connect(ui->recentPage, &CommonPage::updateLikeMusic, this, &QMusic::onUpdateLikeMusic);
 }
 
 QJsonArray QMusic::randomPicture()
@@ -246,4 +256,67 @@ void QMusic::on_volume_clicked()
     // 4. 执行移动并显示
     volumeTool->move(volumeLeftTop);
     volumeTool->show();
+}
+
+void QMusic::on_addLocal_clicked()
+{
+    // 1. 实例化文件对话框
+    QFileDialog fileDialog(this);
+    fileDialog.setWindowTitle("添加本地音乐");
+
+    // 2. 设置对话框交互模式：文件打开模式
+    fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+
+    // 3. 设置文件选择模式：ExistingFiles 支持一次性选择多个已存在的文件
+    fileDialog.setFileMode(QFileDialog::ExistingFiles);
+
+    // 4. 配置 MIME 类型过滤器
+    // 使用 MIME 类型（如 application/octet-stream）来限制用户选择的文件类型
+    QStringList mimeList;
+    mimeList << "application/octet-stream";
+    fileDialog.setMimeTypeFilters(mimeList);
+
+    // 5. 动态设置默认打开路径
+    // 获取当前程序运行目录并向上跳转一级，定位到工程预设的音乐文件夹
+    QDir dir(QDir::currentPath());
+    dir.cdUp();
+    QString musicPath = dir.path() + "/QMusic/musics/";
+    fileDialog.setDirectory(musicPath);
+
+    // 6. 以模态方式显示对话框并处理返回结果
+    // exec() 会阻塞当前线程，直到用户点击“打开”或“取消”
+    if (fileDialog.exec() == QFileDialog::Accepted)
+    {
+        // 跳转至“本地音乐”展示界面（StackedWidget 索引为 4）
+        onBtFormClick(5);
+
+        // 获取选中的文件 URL 列表
+        QList<QUrl> urls = fileDialog.selectedUrls();
+
+        // 拿到歌曲⽂件后，将歌曲⽂件交由musicList进⾏管理
+        musicList.addMusicByUrl(urls);
+
+        // 更新到本地⾳乐列表
+        ui->localPage->reFresh(musicList);
+    }
+}
+
+void QMusic::onUpdateLikeMusic(bool isLike, QString musicId)
+{
+    // 1. 核心数据同步：定位目标歌曲并更新内存对象信息
+    // 在全局 musicList 中通过唯一 ID 查找对应的歌曲实体
+    auto it = musicList.findMusicById(musicId);
+    if (it != musicList.end())
+    {
+        // 更新 Music 对象的 isLike 状态
+        // 这一步确保了 Model 层的数据是最新的
+        it->setIsLike(isLike);
+    }
+
+    // 2. 视图级联刷新：通知所有相关页面更新显示
+    // 由于“收藏”状态的改变会影响多个页面的列表内容或图标状态
+    // 我们需要依次调用各个页面的 reFresh 接口进行全量或局部重绘
+    ui->likePage->reFresh(musicList);   // 刷新“我喜欢”页面：实时增加或移除歌曲项
+    ui->localPage->reFresh(musicList);  // 刷新“本地下载”页面：同步心形图标状态
+    ui->recentPage->reFresh(musicList); // 刷新“最近播放”页面：同步收藏标记
 }

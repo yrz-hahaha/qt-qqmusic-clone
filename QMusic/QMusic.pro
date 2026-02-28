@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -20,6 +20,8 @@ SOURCES += \
     commonpage.cpp \
     listitembox.cpp \
     main.cpp \
+    music.cpp \
+    musiclist.cpp \
     musicslider.cpp \
     qmusic.cpp \
     recbox.cpp \
@@ -30,6 +32,8 @@ HEADERS += \
     btform.h \
     commonpage.h \
     listitembox.h \
+    music.h \
+    musiclist.h \
     musicslider.h \
     qmusic.h \
     recbox.h \

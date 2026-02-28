@@ -6,6 +6,7 @@
 #include <QGraphicsDropShadowEffect>
 
 #include "volumetool.h"
+#include "musiclist.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class QMusic; }
@@ -23,6 +24,8 @@ public:
 
 private slots:
     void on_volume_clicked();
+
+    void on_addLocal_clicked();
 
 protected:
     // 重写QWidget类的⿏标单击和⿏标移动事件
@@ -45,6 +48,8 @@ protected:
     // 图片路径和推荐文本准备
     QJsonArray randomPicture();
 
+    void onUpdateLikeMusic(bool isLike, QString musicId); // 响应CommonPage发射
+
 private:
     Ui::QMusic *ui;
 
@@ -52,5 +57,7 @@ private:
     QPoint dragPosition;	// 记录鼠标按下时，鼠标指针相对于窗口左上角的坐标偏移
 
     VolumeTool* volumeTool;
+
+    MusicList musicList;   // 程序用来组织歌曲文件
 };
 #endif // WIDGET_H
