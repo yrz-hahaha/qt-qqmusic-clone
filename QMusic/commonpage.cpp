@@ -9,6 +9,18 @@ CommonPage::CommonPage(QWidget *parent) :
     ui->setupUi(this);
 
     ui->pageMusicList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    // playAllBtn按钮的信号槽处理
+    // 当播放按钮点击时，发射playAll信号，播放当前⻚⾯的所有歌曲
+    // playAll信号交由QQMusic中处理
+    connect(ui->playAllBtn, &QPushButton::clicked, this, [=](){
+        emit playAll(pageType);
+    });
+
+    connect(ui->pageMusicList, &QListWidget::doubleClicked, this, [=](const QModelIndex &index){
+        // ⿏标双击后，发射信号告诉QQMusic，播放this⻚⾯中共被双击的歌曲
+        emit playMusicByIndex(this, index.row());
+    });
 }
 
 CommonPage::~CommonPage()
@@ -121,4 +133,57 @@ void CommonPage::addMusicToMusicPage(MusicList &musicList)
             break;
         }
     }
+}
+
+void CommonPage::addMusicToPlayer(MusicList &musicList, QMediaPlaylist *playList)
+{
+    // 1. 播放列表预处理
+    // 在添加新曲目之前，通常需要清空旧的播放列表，确保播放顺序与当前页面显示一致
+    playList->clear();
+
+    // 2. 遍历全局音乐资源池
+    // 建议使用 const auto &music 以提升性能，避免在循环中产生对象拷贝
+    for (auto &music : musicList)
+    {
+        // 3. 根据当前页面类型（PageType）进行逻辑过滤
+        // 只有符合当前页面属性的音乐才会被加入到播放队列中
+        switch (this->pageType)
+        {
+        case LOCAL_PAGE:
+            // 本地页面：加载所有已识别的本地音乐
+            playList->addMedia(music.getMusicUrl());
+            break;
+
+        case LIKE_PAGE:
+            // “我喜欢”页面：仅加载标记为 Like 的歌曲
+            if (music.getIsLike())
+            {
+                playList->addMedia(music.getMusicUrl());
+            }
+            break;
+
+        case HISTORY_PAGE:
+            // “最近播放”页面：仅加载有历史记录标记的歌曲
+            if (music.getIsHistory())
+            {
+                playList->addMedia(music.getMusicUrl());
+            }
+            break;
+
+        default:
+            // 兜底处理
+            break;
+        }
+    }
+}
+
+const QString &CommonPage::getMusicIdByIndex(int index) const
+{
+    if(index >= musicListOfPage.size())
+    {
+        qDebug()<<"⽆此歌曲";
+        return "";
+    }
+
+    return musicListOfPage[index];
 }

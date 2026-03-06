@@ -8,17 +8,17 @@
         "type": "tabs",
         "children": [
           {
-            "id": "f0d66ce0a752ebbc",
+            "id": "bb96f9c3e66abed6",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "8. 音乐管理.md",
+                "file": "9. 音乐播放控制.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "8. 音乐管理"
+              "title": "9. 音乐播放控制"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 279.5
   },
   "right": {
     "id": "f2faeaafaf345ff4",
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "8. 音乐管理.md",
+                "file": "9. 音乐播放控制.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "8. 音乐管理 的大纲"
+              "title": "9. 音乐播放控制 的大纲"
             }
           }
         ],
@@ -183,14 +183,15 @@
       "bases:新建数据库": false
     }
   },
-  "active": "f0d66ce0a752ebbc",
+  "active": "bb96f9c3e66abed6",
   "lastOpenFiles": [
-    "assets/Pasted image 20260227212824.png",
-    "7. 自定义控件4 --- MusicSlider 和 VolumeTool.md",
     "8. 音乐管理.md",
+    "7. 自定义控件4 --- MusicSlider 和 VolumeTool.md",
+    "6. 自定义控件3 --- CommonPage 页面.md",
+    "9. 音乐播放控制.md",
+    "assets/Pasted image 20260227212824.png",
     "5. 自定义控件2 --- 推荐页面.md",
     "4. 自定义控件1 --- BtForm.md",
-    "6. 自定义控件3 --- CommonPage 页面.md",
     "3. 界面美化.md",
     "assets/Pasted image 20260224160303.png",
     "assets/QQ_1771919039522.png",
@@ -201,7 +202,6 @@
     "assets/QQ_1771830427245.png",
     "assets/QQ_1771816219841.png",
     "assets/QQ_1771816148091.png",
-    "assets/QQ_1771814774833.png",
     "QSS.md",
     "2. 界面布局设计.md",
     "Qt 项目核心类重构流程.md",

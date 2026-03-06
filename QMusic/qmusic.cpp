@@ -58,8 +58,18 @@ void QMusic::initUI()
     ui->recentPage->setMusicListType(PageType::HISTORY_PAGE);
     ui->recentPage->setCommonPageUI("最近播放", ":/images/recentbg.png");
 
+    // 按钮的背景图⽚样式去除掉之后，需要设置默认图标
+    // 播放控制区按钮图标设定
+    ui->play->setIcon(QIcon(":/images/play.png")); // 默认为播放图标
+    ui->playMode->setIcon(QIcon(":/images/shuffle_2.png")); // 默认为随机播放
+
     // 创建⾳量调节窗⼝对象并挂到对象树
     volumeTool = new VolumeTool(this);
+
+    // 初始化播放器
+    initPlayer();
+
+    curPage = ui->localPage;
 }
 
 void QMusic::mousePressEvent(QMouseEvent *event)
@@ -191,6 +201,21 @@ void QMusic::connectSignalAndSlot()
     connect(ui->likePage, &CommonPage::updateLikeMusic, this, &QMusic::onUpdateLikeMusic);
     connect(ui->localPage, &CommonPage::updateLikeMusic, this, &QMusic::onUpdateLikeMusic);
     connect(ui->recentPage, &CommonPage::updateLikeMusic, this, &QMusic::onUpdateLikeMusic);
+
+    // 播放控制区的信号和槽函数关联
+    connect(ui->play, &QPushButton::clicked, this, &QMusic::onPlayClicked);
+    connect(ui->playUp, &QPushButton::clicked, this, &QMusic::onPlayUpClicked);
+    connect(ui->playDown, &QPushButton::clicked, this, &QMusic::onPlayDownClicked);
+
+    // 关联播放所有的信号和槽函数
+    connect(ui->likePage, &CommonPage::playAll, this, &QMusic::onPlayAll);
+    connect(ui->localPage, &CommonPage::playAll, this, &QMusic::onPlayAll);
+    connect(ui->recentPage, &CommonPage::playAll, this, &QMusic::onPlayAll);
+
+    // 处理likePage、localPage、recentPage中ListItemBox双击
+    connect(ui->likePage, &CommonPage::playMusicByIndex, this, &QMusic::playMusicByIndex);
+    connect(ui->localPage, &CommonPage::playMusicByIndex, this, &QMusic::playMusicByIndex);
+    connect(ui->recentPage, &CommonPage::playMusicByIndex, this, &QMusic::playMusicByIndex);
 }
 
 QJsonArray QMusic::randomPicture()
@@ -319,4 +344,234 @@ void QMusic::onUpdateLikeMusic(bool isLike, QString musicId)
     ui->likePage->reFresh(musicList);   // 刷新“我喜欢”页面：实时增加或移除歌曲项
     ui->localPage->reFresh(musicList);  // 刷新“本地下载”页面：同步心形图标状态
     ui->recentPage->reFresh(musicList); // 刷新“最近播放”页面：同步收藏标记
+}
+
+void QMusic::initPlayer()
+{
+    // 1. 实例化核心播放引擎
+    // QMediaPlayer 负责处理播放、暂停、停止、音量调节等底层播放逻辑
+    player = new QMediaPlayer(this);
+
+    // 2. 实例化播放列表管理器
+    // QMediaPlaylist 负责维护歌曲队列、切换下一曲以及管理播放模式
+    playList = new QMediaPlaylist(this);
+
+    // 3. 配置播放行为
+    // 设置播放模式为“循环播放”（Loop），这是音乐播放器最常用的默认设置
+    playList->setPlaybackMode(QMediaPlaylist::Loop);
+
+    // 4. 建立逻辑关联
+    // 将播放列表绑定到播放器上。此后，player 将自动根据 playList 的指示进行工作
+    player->setPlaylist(playList);
+
+    // 5. 初始化状态设定
+    // 设置默认音量。注意：Qt 的音量范围通常是 0 到 100
+    player->setVolume(20);
+
+    connect(player, &QMediaPlayer::stateChanged, this, &QMusic::onPlayStateChanged);
+
+    // 设置播放模式
+    connect(ui->playMode, &QPushButton::clicked, this, &QMusic::onPlaybackModeClicked);
+
+    // 播放列表的模式放⽣改变时的信号槽关联
+    connect(playList, &QMediaPlaylist::playbackModeChanged, this, &QMusic::onPlaybackModeChanged);
+
+    connect(playList, &QMediaPlaylist::currentIndexChanged, this, &QMusic::onCurrentIndexChanged);
+}
+
+void QMusic::onPlayClicked()
+{
+    // 调试输出，用于在控制台确认按钮点击事件是否正常触发
+    qDebug() << "播放按钮点击";
+
+    // 1. 检查播放器当前的运行状态
+    // QMediaPlayer::state() 返回当前的枚举值，用于判断是正在播放、暂停还是停止
+    if (player->state() == QMediaPlayer::PlayingState)
+    {
+        // 逻辑 A：如果歌曲正在播放中，点击按钮应执行“暂停”操作
+        player->pause();
+    }
+    else if (player->state() == QMediaPlayer::PausedState)
+    {
+        // 逻辑 B：如果处于暂停状态，点击按钮应“恢复播放”
+        player->play();
+    }
+    else if (player->state() == QMediaPlayer::StoppedState)
+    {
+        // 逻辑 C：如果处于停止状态（例如刚打开程序或播放结束），点击按钮开始播放
+        player->play();
+    }
+}
+
+// QMediaPlayer 状态改变时触发的信号关联槽函数
+void QMusic::onPlayStateChanged()
+{
+    // 在控制台输出调试信息，便于追踪状态切换时机
+    qDebug() << "播放状态改变";
+
+    // 1. 判断播放器的实时状态
+    if (player->state() == QMediaPlayer::PlayingState)
+    {
+        // 逻辑 A：如果当前处于播放状态
+        // 将按钮图标切换为“暂停”样式（通常是两条竖杠），提示用户点击可暂停
+        ui->play->setIcon(QIcon(":/images/pause.png"));
+    }
+    else
+    {
+        // 逻辑 B：如果处于暂停或停止状态
+        // 将按钮图标切换为“播放”样式（通常是一个三角形），提示用户点击可开始播放
+        ui->play->setIcon(QIcon(":/images/play.png"));
+    }
+}
+
+void QMusic::onPlayUpClicked()
+{
+    playList->previous();
+}
+
+void QMusic::onPlayDownClicked()
+{
+    playList->next();
+}
+
+void QMusic::onPlaybackModeClicked()
+{
+    // 播放模式是针对播放列表 (QMediaPlaylist) 进行设置的
+    // 本逻辑支持：列表循环、随机播放、单曲循环三种核心模式的循环切换
+    if (playList->playbackMode() == QMediaPlaylist::Loop)
+    {
+        // 当前为：列表循环 -> 切换为：随机播放
+        ui->playMode->setToolTip("随机播放");
+        playList->setPlaybackMode(QMediaPlaylist::Random);
+    }
+    else if (playList->playbackMode() == QMediaPlaylist::Random)
+    {
+        // 当前为：随机播放 -> 切换为：单曲循环
+        ui->playMode->setToolTip("单曲循环");
+        playList->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+    }
+    else if (playList->playbackMode() == QMediaPlaylist::CurrentItemInLoop)
+    {
+        // 当前为：单曲循环 -> 切换为：列表循环
+        ui->playMode->setToolTip("列表循环");
+        playList->setPlaybackMode(QMediaPlaylist::Loop);
+    }
+    else
+    {
+        // 异常处理：捕获未定义的播放模式状态
+        qDebug() << "播放模式错误";
+    }
+}
+
+// 播放模式改变时触发的信号关联槽函数
+void QMusic::onPlaybackModeChanged(QMediaPlaylist::PlaybackMode playbackMode)
+{
+    // 根据传入的最新播放模式，切换对应的按钮图标
+    if (playbackMode == QMediaPlaylist::Loop)
+    {
+        // 模式：列表循环 -> 设置为对应的循环图标
+        ui->playMode->setIcon(QIcon(":/images/list_play.png"));
+    }
+    else if (playbackMode == QMediaPlaylist::Random)
+    {
+        // 模式：随机播放 -> 设置为交叉箭头图标
+        ui->playMode->setIcon(QIcon(":/images/shuffle_2.png"));
+    }
+    else if (playbackMode == QMediaPlaylist::CurrentItemInLoop)
+    {
+        // 模式：单曲循环 -> 设置为带数字1的循环图标
+        ui->playMode->setIcon(QIcon(":/images/single_play.png"));
+    }
+    else
+    {
+        // 异常处理：针对目前尚未实现的播放模式（如 Sequential）进行日志记录
+        qDebug() << "暂不支持该模式";
+    }
+}
+
+void QMusic::onPlayAll(PageType pageType)
+{
+    // 1. 定义一个指向通用页面的指针，用于存放匹配到的页面对象
+    CommonPage* page = nullptr;
+
+    // 2. 根据传入的页面类型枚举，进行分发定位
+    switch (pageType)
+    {
+    case PageType::LIKE_PAGE:
+        // 如果是“我喜欢”页面
+        page = ui->likePage;
+        break;
+
+    case PageType::LOCAL_PAGE:
+        // 如果是“本地下载”页面
+        page = ui->localPage;
+        break;
+
+    case PageType::HISTORY_PAGE:
+        // 核心纠错：注意此处应与你定义的枚举 HISTORY_PAGE 保持拼写一致
+        page = ui->recentPage;
+        break;
+
+    default:
+        // 扩展接口：预留给未来可能增加的搜索页面或歌单页面
+        qDebug() << "其他扩展页面播放逻辑";
+        break;
+    }
+
+    // 3. 执行播放序列
+    // 逻辑：从当前匹配页面的“零号索引”（即第一首歌）开始，循环播放该页面的所有曲目
+    if (page != nullptr)
+    {
+        playAllOfCommonPage(page, 0);
+    }
+}
+
+void QMusic::playAllOfCommonPage(CommonPage *commonPage, int index)
+{
+    curPage = commonPage;
+
+    // 播放page所在⻚⾯的⾳乐
+    // 将播放列表先清空，否则⽆法播放当前CommonPage⻚⾯的歌曲
+    // 另外：该⻚⾯⾳乐不⼀定就在播放列表中，因此需要先将该⻚⾯⾳乐添加到播放列表
+    playList->clear();
+
+    // 将当前⻚⾯歌曲添加到播放列表
+    commonPage->addMusicToPlayer(musicList, playList);
+
+    // 设置当前播放列表的索引
+    playList->setCurrentIndex(index);
+
+    // 播放
+    player->play();
+}
+
+void QMusic::playMusicByIndex(CommonPage *page, int index)
+{
+    playAllOfCommonPage(page, index);
+}
+
+void QMusic::onCurrentIndexChanged(int index)
+{
+    // 防御性编程：拦截 clear() 等操作带来的 -1 非法索引
+    if (index < 0) return;
+
+    // 1. 获取当前播放歌曲的 ID
+    // 逻辑：所有音乐的 ID 都存储在当前页面的 musicListOfPage 容器中
+    // 通过索引 index 快速定位到具体的 MusicId
+    const QString& musicId = curPage->getMusicIdByIndex(index);
+
+    // 2. 在全局音乐库中查找对应的实体对象
+    // 有了 MusicId 就可以通过 findMusicByMusicId 函数在 musicList 中找到该音乐
+    auto it = musicList.findMusicById(musicId);
+
+    if (it != musicList.end())
+    {
+        // 3. 业务逻辑处理：更新播放状态
+        // 将该音乐设置为“历史播放记录”，即 isHistory = true
+        it->setIsHistory(true);
+    }
+
+    // 4. UI 同步：刷新“最近播放”页面
+    // 只有调用了 reFresh，用户才能在“最近播放”列表中看到刚刚听过的歌曲
+    ui->recentPage->reFresh(musicList);
 }

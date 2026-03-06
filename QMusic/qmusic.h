@@ -4,9 +4,12 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QGraphicsDropShadowEffect>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
 
 #include "volumetool.h"
 #include "musiclist.h"
+#include "commonpage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class QMusic; }
@@ -26,6 +29,7 @@ private slots:
     void on_volume_clicked();
 
     void on_addLocal_clicked();
+
 
 protected:
     // 重写QWidget类的⿏标单击和⿏标移动事件
@@ -50,6 +54,27 @@ protected:
 
     void onUpdateLikeMusic(bool isLike, QString musicId); // 响应CommonPage发射
 
+    void initPlayer(); // 初始化媒体对象
+
+    void onPlayClicked(); // 播放按钮
+
+    // 播放状态发⽣改变
+    void onPlayStateChanged();
+
+    void onPlayUpClicked(); // 上⼀曲
+    void onPlayDownClicked(); // 下⼀曲
+
+    void onPlaybackModeClicked(); // 播放模式设置
+
+    void onPlaybackModeChanged(QMediaPlaylist::PlaybackMode playbackMode);
+
+    void onPlayAll(PageType pageType);
+    void playAllOfCommonPage(CommonPage* commonPage, int index);
+
+    void playMusicByIndex(CommonPage* page, int index);
+
+    void onCurrentIndexChanged(int index);
+
 private:
     Ui::QMusic *ui;
 
@@ -59,5 +84,13 @@ private:
     VolumeTool* volumeTool;
 
     MusicList musicList;   // 程序用来组织歌曲文件
+
+    //播放器相关
+    QMediaPlayer* player;
+
+    // 要多⾸歌曲播放，以及更复杂的播放设置，需要给播放器设置媒体列表
+    QMediaPlaylist* playList;
+
+    CommonPage* curPage;
 };
 #endif // WIDGET_H

@@ -83,5 +83,7 @@
         <file>images/rec/040.png</file>
         <file>images/add2.png</file>
         <file>images/rec/002.png</file>
+        <file>images/pause.png</file>
+        <file>images/pause_2.png</file>
     </qresource>
 </RCC>
