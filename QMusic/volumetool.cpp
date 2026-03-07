@@ -7,6 +7,8 @@
 VolumeTool::VolumeTool(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::VolumeTool)
+    , isMuted(false) // 默认静⾳
+    , volumeRatio(20) // 默认⾳量为20%
 {
     ui->setupUi(this);
 
@@ -44,6 +46,12 @@ VolumeTool::VolumeTool(QWidget *parent)
 
     // 同步 UI 文本显示
     ui->volumeRatio->setText("20%");
+
+    // 关联静⾳按钮的信号槽
+    connect(ui->silenceBtn, &QPushButton::clicked, this, &VolumeTool::onSilenceBtnClicked);
+
+    // 安装事件过滤器
+    ui->sliderBox->installEventFilter(this);
 }
 
 VolumeTool::~VolumeTool()
@@ -75,4 +83,86 @@ void VolumeTool::paintEvent(QPaintEvent *event)
 
     // 6. 绘制三角形
     painter.drawPolygon(polygon);
+}
+
+void VolumeTool::onSilenceBtnClicked()
+{
+    // 1. 状态翻转：在静音与非静音之间切换
+    isMuted = !isMuted;
+
+    // 2. UI 图标切换：根据状态显示不同的喇叭图标
+    if (isMuted)
+    {
+        ui->silenceBtn->setIcon(QIcon(":/images/silent.png"));
+    }
+    else
+    {
+        ui->silenceBtn->setIcon(QIcon(":/images/volumn.png"));
+    }
+
+    // 3. 发射信号：通知主窗口或其他监听者更新播放器状态
+    emit setSilence(isMuted);
+}
+
+bool VolumeTool::eventFilter(QObject *object, QEvent *event)
+{
+    // 1. 目标判定：仅处理针对 volumeBox（音量容器）的事件
+    if (object == ui->sliderBox)
+    {
+        // 获取事件类型进行分支处理
+        if (event->type() == QEvent::MouseButtonPress)
+        {
+            // A. 鼠标按下事件：实现“点哪跳哪”
+            // 立即修改滑块按钮 (sliderBtn) 和外轮廓 (outLine) 的位置
+            // 重新计算音量比例 (volumeRatio) 并调用 setVolume() 更新 UI 显示
+            setVolume();
+        }
+        else if (event->type() == QEvent::MouseMove)
+        {
+            // B. 鼠标移动事件：实现滑动调节
+            // 在拖拽过程中实时修改位置、计算比例并更新界面
+            setVolume();
+
+            // 关键点：实时向外部发射信号，确保播放器音量能够跟随手指即时变化
+            emit setMusicVolume(volumeRatio);
+        }
+        else if (event->type() == QEvent::MouseButtonRelease)
+        {
+            // C. 鼠标释放事件：交互结束
+            // 确保在松开鼠标时，最后一次确定的音量值被准确同步到播放器
+            emit setMusicVolume(volumeRatio);
+        }
+
+        // 表示事件已被处理，不再向下传递
+        return true;
+    }
+
+    // 2. 非目标对象：交给父类处理默认逻辑
+    return QObject::eventFilter(object, event);
+}
+
+void VolumeTool::setVolume()
+{
+    // 1. 坐标转换：将鼠标在全局（屏幕）的位置转换为在 sliderBox 上的相对 y 坐标
+    int height = ui->sliderBox->mapFromGlobal(QCursor::pos()).y();
+
+    // 2. 边界限制：鼠标在 sliderBox 中可移动的有效 y 范围在 [25, 205] 之间
+    // 这种“硬编码”限制确保了滑块不会飞出预设的槽位
+    height = (height < 25) ? 25 : height;
+    height = (height > 205) ? 205 : height;
+
+    // 3. 调整滑块按钮位置：保持 x 轴不变，更新 y 轴，并做居中补偿处理
+    ui->sliderBtn->move(ui->sliderBtn->x(), height - ui->sliderBtn->height() / 2);
+
+    // 4. 更新进度条 (outLine) 的位置和大小
+    // 随着滑块上移，进度条的高度会增加（205 - height）
+    ui->outSlider->setGeometry(ui->outSlider->x(), height, ui->outSlider->width(), 205 - height);
+
+    // 5. 计算音量比率
+    // 180 是你定义的有效滑动总长度（205 - 25 = 180）
+    // 通过当前进度条高度占总长度的比例计算出 0-100 的整数值
+    volumeRatio = (int)((float)ui->outSlider->height() / 180 * 100);
+
+    // 6. UI 反馈：将计算出的音量百分比显示在 Label 上
+    ui->volumeRatio->setText(QString::number(volumeRatio) + "%");
 }

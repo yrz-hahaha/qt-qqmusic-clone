@@ -75,6 +75,20 @@ protected:
 
     void onCurrentIndexChanged(int index);
 
+    void setMusicSilence(bool isMuted);
+
+    void setPlayerVolume(int volume); // 设置⾳量⼤⼩
+
+    // 歌曲持续时⻓改变时[歌曲切换]
+    void onDurationChanged(qint64 duration);
+
+    // 播放位置改变，即持续播放时间改变
+    void onPositionChanged(qint64 duration);
+
+    void onMusicSliderChanged(float value); // 进度条改变
+
+    void onMetaDataAvailableChanged(bool available);
+
 private:
     Ui::QMusic *ui;
 
@@ -92,5 +106,8 @@ private:
     QMediaPlaylist* playList;
 
     CommonPage* curPage;
+
+    qint64 totalTime;         // 记录媒体源的总时间
+    int currentIndex;         // 记录当前正在播放歌曲在媒体列表中的索引
 };
 #endif // WIDGET_H

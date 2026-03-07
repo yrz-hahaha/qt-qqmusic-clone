@@ -10,10 +10,18 @@
 QMusic::QMusic(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::QMusic)
+    , totalTime(0)
+    , currentIndex(-1)
 {
     ui->setupUi(this);
 
     initUI();
+
+    // 链接信号和槽
+    connectSignalAndSlot();
+
+    // 初始化播放器
+    initPlayer();
 }
 
 QMusic::~QMusic()
@@ -31,9 +39,6 @@ void QMusic::initUI()
 
     // 设置BodyLeft中6个btForm的信息
     setBtFormInfo();
-
-    // 链接信号和槽
-    connectSignalAndSlot();
 
     // 这里直接调“onBtFormClick(1);”，可能会出现 Bug，就是“推荐”选项卡的频谱能跳动，但颜色并没有变化，还是初始的灰色。
     // 原因是当我们在 Widget 的构造函数里调用 onBtFormClick(1); 时，构造函数运行，
@@ -65,9 +70,6 @@ void QMusic::initUI()
 
     // 创建⾳量调节窗⼝对象并挂到对象树
     volumeTool = new VolumeTool(this);
-
-    // 初始化播放器
-    initPlayer();
 
     curPage = ui->localPage;
 }
@@ -216,6 +218,15 @@ void QMusic::connectSignalAndSlot()
     connect(ui->likePage, &CommonPage::playMusicByIndex, this, &QMusic::playMusicByIndex);
     connect(ui->localPage, &CommonPage::playMusicByIndex, this, &QMusic::playMusicByIndex);
     connect(ui->recentPage, &CommonPage::playMusicByIndex, this, &QMusic::playMusicByIndex);
+
+    // 设置静⾳
+    connect(volumeTool, &VolumeTool::setSilence, this, &QMusic::setMusicSilence);
+
+    // 设置⾳量⼤⼩
+    connect(volumeTool, &VolumeTool::setMusicVolume, this, &QMusic::setPlayerVolume);
+
+    // 进度条拖拽
+    connect(ui->processBar, &MusicSlider::setMusicSliderPosition, this, &QMusic::onMusicSliderChanged);
 }
 
 QJsonArray QMusic::randomPicture()
@@ -377,6 +388,15 @@ void QMusic::initPlayer()
     connect(playList, &QMediaPlaylist::playbackModeChanged, this, &QMusic::onPlaybackModeChanged);
 
     connect(playList, &QMediaPlaylist::currentIndexChanged, this, &QMusic::onCurrentIndexChanged);
+
+    // 媒体持续时⻓更新，即：⾳乐切换，界⾯上时间也要更新
+    connect(player, &QMediaPlayer::durationChanged, this, &QMusic::onDurationChanged);
+
+    // 播放位置发⽣改变，即已经播放时间更新
+    connect(player, &QMediaPlayer::positionChanged, this, &QMusic::onPositionChanged);
+
+    // 关联QMediaPlayer::metaDataAvailableChanged
+    connect(player, &QMediaPlayer::metaDataAvailableChanged, this, &QMusic::onMetaDataAvailableChanged);
 }
 
 void QMusic::onPlayClicked()
@@ -552,6 +572,8 @@ void QMusic::playMusicByIndex(CommonPage *page, int index)
 
 void QMusic::onCurrentIndexChanged(int index)
 {
+    currentIndex = index;
+
     // 防御性编程：拦截 clear() 等操作带来的 -1 非法索引
     if (index < 0) return;
 
@@ -574,4 +596,86 @@ void QMusic::onCurrentIndexChanged(int index)
     // 4. UI 同步：刷新“最近播放”页面
     // 只有调用了 reFresh，用户才能在“最近播放”列表中看到刚刚听过的歌曲
     ui->recentPage->reFresh(musicList);
+}
+
+void QMusic::setMusicSilence(bool isMuted)
+{
+    // 调用底层 QMediaPlayer 接口实现静音或恢复音量
+    player->setMuted(isMuted);
+}
+
+void QMusic::setPlayerVolume(int volume)
+{
+    player->setVolume(volume);
+}
+
+void QMusic::onDurationChanged(qint64 duration)
+{
+    totalTime = duration;
+
+    ui->totalTime->setText(QString("%1:%2").arg(duration/1000/60, 2, 10,QChar('0'))
+                                           .arg(duration/1000%60, 2, 10,QChar('0')));
+}
+
+void QMusic::onPositionChanged(qint64 duration)
+{
+    ui->currentTime->setText(QString("%1:%2").arg(duration/1000/60, 2, 10, QChar('0'))
+                                             .arg(duration/1000%60, 2, 10, QChar('0')));
+
+    // 防御性拦截：确保分母不为 0
+    if (totalTime > 0)
+    {
+        ui->processBar->setStep((float)duration / (float)totalTime);
+    }
+}
+
+void QMusic::onMusicSliderChanged(float value)
+{
+    // 1. 计算当前seek位置的时⻓
+    qint64 duration = (qint64)(totalTime * value);
+
+    // 2. 转换为百分制，设置当前时间
+    ui->currentTime->setText(QString("%1:%2").arg(duration/1000/60, 2, 10, QChar('0'))
+                                             .arg(duration/1000%60, 2, 10, QChar('0')));
+
+    // 3. 设置当前播放位置
+    player->setPosition(duration);
+}
+
+void QMusic::onMetaDataAvailableChanged(bool available)
+{
+    (int)(available);
+    // 歌曲名称、歌曲作者直接到Musci对象中获取
+    // 此时需要知道媒体源在播放列表中的索引
+    QString musicId = curPage->getMusicIdByIndex(currentIndex);
+    auto it = musicList.findMusicById(musicId);
+
+    QString musicName("未知歌曲");
+    QString musicSinger("歌手未知");
+    if(it != musicList.end())
+    {
+        musicName = it->getMusicName();
+        musicSinger = it->getSingerName();
+    }
+
+    ui->musicName->setText(musicName);
+    ui->musicSinger->setText(musicSinger);
+
+    // 获取封面图，通过元数据来获取
+    QVariant coverimage = player->metaData("ThumbnailImage");
+    if(coverimage.isValid())
+    {
+        QImage image = coverimage.value<QImage>();
+        ui->musicCover->setPixmap(QPixmap::fromImage(image));
+        curPage->setMusicImage(QPixmap::fromImage(image));
+    }
+    else
+    {
+        qDebug()<<"歌曲没有封面图";
+        // 可以设置默认图片
+        QString path = ":/images/rec/001.png";
+        ui->musicCover->setPixmap(path);
+        curPage->setMusicImage(path);
+    }
+    ui->musicCover->setScaledContents(true);
 }

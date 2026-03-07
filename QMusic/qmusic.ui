@@ -755,27 +755,67 @@ QScrollBar::handle:vertical {
                <property name="styleSheet">
                 <string notr="true"/>
                </property>
-               <layout class="QGridLayout" name="gridLayout">
-                <item row="0" column="1">
-                 <widget class="QLabel" name="musicName">
-                  <property name="text">
-                   <string>歌名</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLabel" name="musicSinger">
-                  <property name="text">
-                   <string>歌手</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
                  <widget class="QLabel" name="musicCover">
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>50</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>50</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string>text</string>
                   </property>
                  </widget>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_9">
+                  <item>
+                   <widget class="QLabel" name="musicName">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>歌名</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="musicSinger">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>歌手</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
@@ -834,10 +874,7 @@ QPushButton:pressed
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">#playMode
-{
-	background-image: url(:/images/shuffle_2.png);
-}</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string/>
