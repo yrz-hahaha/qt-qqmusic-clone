@@ -6,10 +6,12 @@
 #include <QGraphicsDropShadowEffect>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
+#include <QPropertyAnimation>
 
 #include "volumetool.h"
 #include "musiclist.h"
 #include "commonpage.h"
+#include "lrcpage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class QMusic; }
@@ -89,6 +91,8 @@ protected:
 
     void onMetaDataAvailableChanged(bool available);
 
+    void onLrcWordClicked();
+
 private:
     Ui::QMusic *ui;
 
@@ -109,5 +113,8 @@ private:
 
     qint64 totalTime;         // 记录媒体源的总时间
     int currentIndex;         // 记录当前正在播放歌曲在媒体列表中的索引
+
+    LrcPage* lrcPage;
+    QPropertyAnimation* lrcPageAnimal;
 };
 #endif // WIDGET_H

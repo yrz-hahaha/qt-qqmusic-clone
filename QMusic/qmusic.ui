@@ -18,8 +18,8 @@
     <rect>
      <x>9</x>
      <y>9</y>
-     <width>1019</width>
-     <height>679</height>
+     <width>1020</width>
+     <height>680</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -770,8 +770,14 @@ QScrollBar::handle:vertical {
                     <height>50</height>
                    </size>
                   </property>
+                  <property name="styleSheet">
+                   <string notr="true">#musicCover
+{
+	border-image: url(&quot;:/images/rec/001.png&quot;)
+}</string>
+                  </property>
                   <property name="text">
-                   <string>text</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>
@@ -792,7 +798,7 @@ QScrollBar::handle:vertical {
                      </size>
                     </property>
                     <property name="text">
-                     <string>歌名</string>
+                     <string>未知</string>
                     </property>
                    </widget>
                   </item>
@@ -811,7 +817,7 @@ QScrollBar::handle:vertical {
                      </size>
                     </property>
                     <property name="text">
-                     <string>歌手</string>
+                     <string>未知</string>
                     </property>
                    </widget>
                   </item>

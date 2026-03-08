@@ -103,6 +103,17 @@ QString Music::getMusicId()
     return musicId;
 }
 
+QString Music::getLrcFilePath() const
+{
+    // ⾳频⽂件和LRC⽂件在⼀个⽂件夹下
+    // 直接将⾳频⽂件的后缀替换为.lrc
+    QString path = musicUrl.toLocalFile();
+    path.replace(".mp3", ".lrc");
+    path.replace(".flac", ".lrc");
+    path.replace(".mpga", ".lrc");
+    return path;
+}
+
 void Music::parseMediaMetaData()
 {
     // 1. 实例化媒体播放对象

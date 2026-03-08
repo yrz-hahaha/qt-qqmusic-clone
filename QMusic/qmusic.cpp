@@ -72,6 +72,16 @@ void QMusic::initUI()
     volumeTool = new VolumeTool(this);
 
     curPage = ui->localPage;
+
+    // 创建lrc歌词窗⼝
+    lrcPage = new LrcPage(this);
+    lrcPage->hide();
+
+    // lrcPage添加动画效果
+    lrcPageAnimal = new QPropertyAnimation(lrcPage, "geometry", this);
+    lrcPageAnimal->setDuration(250);
+    lrcPageAnimal->setStartValue(QRect(10, 10+lrcPage->height(), lrcPage->width(), lrcPage->height()));
+    lrcPageAnimal->setEndValue(QRect(10, 10, lrcPage->width(), lrcPage->height()));
 }
 
 void QMusic::mousePressEvent(QMouseEvent *event)
@@ -147,7 +157,7 @@ void QMusic::addShadow()
     shadowEffect->setColor(QColor(0, 0, 0, 160));
 
     // 设置阴影的模糊半径：数值越大，阴影越弥散
-    shadowEffect->setBlurRadius(20);
+    shadowEffect->setBlurRadius(10);
 
     // 3. 将阴影效果应用到窗口上
     this->setGraphicsEffect(shadowEffect);
@@ -227,6 +237,9 @@ void QMusic::connectSignalAndSlot()
 
     // 进度条拖拽
     connect(ui->processBar, &MusicSlider::setMusicSliderPosition, this, &QMusic::onMusicSliderChanged);
+
+    // 显⽰歌词窗⼝
+    connect(ui->lrcWord, &QPushButton::clicked, this, &QMusic::onLrcWordClicked);
 }
 
 QJsonArray QMusic::randomPicture()
@@ -627,6 +640,12 @@ void QMusic::onPositionChanged(qint64 duration)
     {
         ui->processBar->setStep((float)duration / (float)totalTime);
     }
+
+    // 同步lrc歌词
+    if(playList->currentIndex() >= 0)
+    {
+        lrcPage->showLrcWord(duration);
+    }
 }
 
 void QMusic::onMusicSliderChanged(float value)
@@ -678,4 +697,19 @@ void QMusic::onMetaDataAvailableChanged(bool available)
         curPage->setMusicImage(path);
     }
     ui->musicCover->setScaledContents(true);
+
+    lrcPage->setMusicName(musicName);
+    lrcPage->setMusicSinger(musicSinger);
+
+    // 加载lrc歌词并解析
+    if(it != musicList.end())
+    {
+        lrcPage->parseLrc(it->getLrcFilePath());
+    }
+}
+
+void QMusic::onLrcWordClicked()
+{
+    lrcPage->show();
+    lrcPageAnimal->start();
 }

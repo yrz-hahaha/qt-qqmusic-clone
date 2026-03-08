@@ -29,6 +29,8 @@ public:
     QUrl getMusicUrl();
     QString getMusicId();
 
+    QString getLrcFilePath() const;
+
 private:
     void parseMediaMetaData();
 
