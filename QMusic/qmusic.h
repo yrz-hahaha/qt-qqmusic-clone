@@ -33,6 +33,12 @@ private slots:
     void on_addLocal_clicked();
 
 
+    void on_min_clicked();
+
+    void on_quit_clicked();
+
+    void on_skin_clicked();
+
 protected:
     // 重写QWidget类的⿏标单击和⿏标移动事件
     void mousePressEvent(QMouseEvent* event) override;

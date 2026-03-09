@@ -16,12 +16,22 @@ void MusicList::addMusicByUrl(const QList<QUrl> &urls)
         // 1. 获取文件的本地路径
         QString localFile = musicUrl.toLocalFile();
 
-        // 2. 利用 Qt 的 MIME 数据库进行深度类型校验
+        // 2. 检测歌曲是否已经存在（去重逻辑）
+        // 如果 musicPaths 集合中已经包含该路径，则跳过本次循环
+        if (musicPaths.contains(localFile))
+        {
+            continue;
+        }
+
+        // 3. 歌曲还没有加载过，将其标记为已处理
+        musicPaths.insert(localFile);
+
+        // 4. 利用 Qt 的 MIME 数据库进行深度类型校验
         // 相比简单的后缀名判断，QMimeDatabase 能够识别文件真实的内容特征
         QMimeDatabase db;
         QMimeType mime = db.mimeTypeForFile(localFile);
 
-        // 3. 严格筛选：仅接受 MPEG（MP3）和 FLAC 无损格式
+        // 5. 严格筛选：仅接受 MPEG（MP3）和 FLAC 无损格式
         // 这一步是确保后续播放引擎 QMediaPlayer 能够正常工作的“防火墙”
         if (mime.name() != "audio/mpeg" && mime.name() != "audio/flac")
         {
@@ -29,7 +39,7 @@ void MusicList::addMusicByUrl(const QList<QUrl> &urls)
             continue;
         }
 
-        // 4. 数据落地：将合法的音乐文件存入列表容器（如 QList<QUrl>）
+        // 6. 数据落地：将合法的音乐文件存入列表容器（如 QList<QUrl>）
         musicList.push_back(musicUrl);
     }
 }

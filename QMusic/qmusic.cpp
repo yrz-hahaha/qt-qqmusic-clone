@@ -6,6 +6,9 @@
 #include <QJsonArray>
 #include <QDir>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QSystemTrayIcon>
+#include <QMenu>
 
 QMusic::QMusic(QWidget *parent)
     : QWidget(parent)
@@ -33,6 +36,27 @@ void QMusic::initUI()
 {
     // 设置窗口为无边框
     setWindowFlag(Qt::WindowType::FramelessWindowHint);
+
+    setWindowIcon(QIcon(":/images/tubiao.png"));  // 设置主窗⼝图标
+
+    ui->max->setEnabled(false);
+
+    // 添加托盘
+    // 创建托盘图标
+    QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setIcon(QIcon(":/images/tubiao.png"));
+
+    // 创建托盘菜单
+    QMenu *trayMenu = new QMenu(this);
+    trayMenu->addAction("还原", this, &QWidget::showNormal);
+    trayMenu->addSeparator();
+    trayMenu->addAction("退出", this, &QWidget::close);
+
+    // 将托盘菜单添加到托盘图标
+    trayIcon->setContextMenu(trayMenu);
+
+    // 显⽰托盘
+    trayIcon->show();
 
     // 为窗口添加阴影
     addShadow();
@@ -82,6 +106,8 @@ void QMusic::initUI()
     lrcPageAnimal->setDuration(250);
     lrcPageAnimal->setStartValue(QRect(10, 10+lrcPage->height(), lrcPage->width(), lrcPage->height()));
     lrcPageAnimal->setEndValue(QRect(10, 10, lrcPage->width(), lrcPage->height()));
+
+
 }
 
 void QMusic::mousePressEvent(QMouseEvent *event)
@@ -712,4 +738,19 @@ void QMusic::onLrcWordClicked()
 {
     lrcPage->show();
     lrcPageAnimal->start();
+}
+
+void QMusic::on_min_clicked()
+{
+    showMinimized();
+}
+
+void QMusic::on_quit_clicked()
+{
+    this->hide();
+}
+
+void QMusic::on_skin_clicked()
+{
+    QMessageBox::information(this, "温馨提⽰", "⼩哥哥正在加班紧急⽀持中...");
 }

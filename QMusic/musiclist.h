@@ -4,6 +4,7 @@
 #include "music.h"
 
 #include <QVector>
+#include <QSet>
 
 typedef typename QVector<Music>::iterator iterator;
 
@@ -21,6 +22,8 @@ public:
     iterator findMusicById(const QString& musicId);
 private:
     QVector<Music> musicList;
+
+    QSet<QString> musicPaths;
 };
 
 #endif // MUSICLIST_H
