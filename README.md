@@ -33,6 +33,25 @@
 - **LRC 歌词界面**：
 ![alt text](QQ_1773125835402.png)
 
+## 📁 项目结构 (Project Structure)
+
+```text
+qt-qqmusic-clone/
+├── QMusic/                 # 核心源代码目录 (Qt 工程主目录)
+│   ├── images/             # UI 界面所需的各种图标、背景图及资源文件 (.qrc)
+│   ├── musics/             # 预置的本地测试音频 (.mp3) 及配套歌词文件 (.lrc)
+│   ├── *.h / *.cpp         # C++ 源代码 (包含自定义控件、音频控制及核心逻辑)
+│   ├── *.ui                # Qt Designer 界面设计文件
+│   └── QMusic.pro          # Qt 项目构建配置文件
+├── 项目文档/               # 开发笔记与教程系列
+│   ├── assets/             # 文档配套的配图与界面截图
+│   └── *.md                # 从界面规划到功能实现的一系列详细记录
+├── QMusic-release/         # 发布目录
+│   └── QMusic.exe          # 编译后的独立可执行文件 (运行依赖库由 .gitignore 忽略)
+├── README.md               # 项目概览与说明文档
+└── LICENSE                 # 开源协议文件
+```
+
 ## 🛠️ 技术栈 (Tech Stack)
 
 * **开发语言**：C++
